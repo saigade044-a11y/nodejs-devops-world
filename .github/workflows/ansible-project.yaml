@@ -71,7 +71,7 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.INSTANCE_IP }}
-          # username: ubuntu
+          username: ubuntu
           # password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.KEY }}
           script: |
