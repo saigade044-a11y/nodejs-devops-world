@@ -34,7 +34,8 @@ jobs:
           docker push 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
           
   # run-playbook:
-  deploy-docker:
+  docker-deploy:
+    needs: docker-build
     runs-on: ubuntu-latest
     steps:
       - name: code checkout
