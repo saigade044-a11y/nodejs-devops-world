@@ -73,7 +73,7 @@ jobs:
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceIds,Values=i-0fadc2ff98593fa7e" \
-            --parameters 'commands=["aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com","docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:$tag_value","docker rm -f Siva-docker","docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:$tag_value"]'
+            --parameters 'commands=["aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com","docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{github.sha}}","docker rm -f Siva-docker","docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{github.sha}}"]'
 
       # - name: Execute remote SSH commands using password
       #   uses: appleboy/ssh-action@v1
