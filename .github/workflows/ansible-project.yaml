@@ -75,6 +75,7 @@ jobs:
           # password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.KEY }}
           script: |
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com
             docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
             docker rm -f Siva-docker
             docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
