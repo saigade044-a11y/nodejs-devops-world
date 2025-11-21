@@ -52,27 +52,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: AWS SSM Send-Command
-        uses: peterkimzz/aws-ssm-send-command@master
-        id: ssm
+      # - name: AWS SSM Send-Command
+      #   uses: peterkimzz/aws-ssm-send-command@master
+      #   id: ssm
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.ACCESS_SECRET_KEY }}
+      #     aws-region: ap-south-1
+      #     instance-ids: ${{ secrets.INSTANCE_ID }}
+      #     working-directory: /home/ubuntu
+      #     command: |
+      #       docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
+      #       docker rm -f Siva-docker
+      #       docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
+      #     comment: docker deployed
+
+      - name: Execute remote SSH commands using password
+        uses: appleboy/ssh-action@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ACCESS_SECRET_KEY }}
-          aws-region: ap-south-1
-          instance-ids: ${{ secrets.INSTANCE_ID }}
-          working-directory: /home/ubuntu
-          command: |
+          host: ${{ secrets.INSTANCE_IP }}
+          # username: ubuntu
+          # password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.KEY }}
+          script: |
             docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
             docker rm -f Siva-docker
             docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
-          comment: docker deployed
-
-      # - name: Execute remote SSH commands using password
-      #   uses: appleboy/ssh-action@v1
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ansibleadmin
-      #     password: ${{ secrets.PASSWORD }}
-      #     key: ${{ secrets.KEY }}
-      #     script: |
-      #       ansible-playbook docker-full.yaml --tags=deploy -vv
