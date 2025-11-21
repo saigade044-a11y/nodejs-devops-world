@@ -30,8 +30,8 @@ jobs:
         env: |
           tag_value: ${{ github.sha }}
         run: |
-          docker build -f Dockerfile -t 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:tag_value .
-          docker push 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:tag_value
+          docker build -f Dockerfile -t 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:$tag_value .
+          docker push 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:$tag_value
           
   # run-playbook:
   #   runs-on: ubuntu-latest
