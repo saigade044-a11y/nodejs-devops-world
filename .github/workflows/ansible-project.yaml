@@ -48,9 +48,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.ACCESS_SECRET_KEY }}
           aws-region: ap-south-1
           
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       # - name: AWS SSM Send-Command
       #   uses: peterkimzz/aws-ssm-send-command@master
@@ -62,20 +62,28 @@ jobs:
       #     instance-ids: ${{ secrets.INSTANCE_ID }}
       #     working-directory: /home/ubuntu
       #     command: |
+      #       aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com
       #       docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
       #       docker rm -f Siva-docker
       #       docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
       #     comment: docker deployed
 
-      - name: Execute remote SSH commands using password
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.INSTANCE_IP }}
-          username: ubuntu
-          # password: ${{ secrets.PASSWORD }}
-          key: ${{ secrets.KEY }}
-          script: |
-            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com
-            docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
-            docker rm -f Siva-docker
-            docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
+      - name: ec2-connect
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=instanceIds,Values=i-0fadc2ff98593fa7e" \
+            --parameters 'commands=["aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com","docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:f8bf8009b43aa1caaf9256d7081c1ee0b9621cdc","docker rm -f Siva-docker","docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:f8bf8009b43aa1caaf9256d7081c1ee0b9621cdc"]'
+
+      # - name: Execute remote SSH commands using password
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.INSTANCE_IP }}
+      #     username: ubuntu
+      #     # password: ${{ secrets.PASSWORD }}
+      #     key: ${{ secrets.KEY }}
+      #     script: |
+      #       aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 869588908060.dkr.ecr.ap-south-1.amazonaws.com
+      #       docker pull 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
+      #       docker rm -f Siva-docker
+      #       docker run -itd -p 3000:3000 --name Siva-docker 869588908060.dkr.ecr.ap-south-1.amazonaws.com/demo-ecr:${{ env.tag_value }}
