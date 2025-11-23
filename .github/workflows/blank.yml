@@ -49,14 +49,16 @@ jobs:
         uses: actions/checkout@v6.0.0
   
       - name: SSM Send Command Action
-        uses: zip-go/aws-ssm-action@v1.0.0
+        uses: peterkimzz/aws-ssm-send-command@v1.1.1
         with:
-          instanceId: i-0ec4b8e2327941582
-          workingDirectory: /
-          region: us-east-1
-          commands: |
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ACCESS_SECRET_KEY_ID }}
+          aws-region: us-east-1
+          instance-ids: i-0ec4b8e2327941582
+          command: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 989007362438.dkr.ecr.us-east-1.amazonaws.com
             docker pull ${{ env.Image_url }}:${{ github.sha }}
             docker stop app || true
             docker rm app || true
             docker run -d --name app -p 80:3000 ${{ env.Image_url }}:${{ github.sha }}
+
