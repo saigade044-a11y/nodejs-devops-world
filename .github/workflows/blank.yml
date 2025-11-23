@@ -56,9 +56,24 @@ jobs:
           aws-region: us-east-1
           instance-ids: i-0ec4b8e2327941582
           command: |
+            
+            if ! command -v aws &> /dev/null; then
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+                unzip awscliv2.zip
+                sudo ./aws/install
+            fi
+            
+            # Login to ECR
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 989007362438.dkr.ecr.us-east-1.amazonaws.com
+            
+            # Pull the image
             docker pull ${{ env.Image_url }}:${{ github.sha }}
+            
+            # Stop and remove old container if exists
             docker stop app || true
             docker rm app || true
+            
+            # Run new container
             docker run -d --name app -p 80:3000 ${{ env.Image_url }}:${{ github.sha }}
-
+            
+            
