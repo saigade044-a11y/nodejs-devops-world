@@ -53,6 +53,7 @@ jobs:
         with:
           instanceId: i-0ec4b8e2327941582
           workingDirectory: /
+          region: us-east-1
           commands: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 989007362438.dkr.ecr.us-east-1.amazonaws.com
             docker pull ${{ env.Image_url }}:${{ github.sha }}
