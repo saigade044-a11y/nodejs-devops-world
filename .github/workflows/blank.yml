@@ -54,14 +54,14 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.ACCESS_SECRET_KEY_ID }}
           aws-region: us-east-1
-          instance-ids: i-0ec4b8e2327941582
+          instance-ids: i-0163c22d580a36ef5
           command: |
           
             # Login to ECR
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 989007362438.dkr.ecr.us-east-1.amazonaws.com
             
             # Pull the image
-            docker   pull ${{ env.Image_url }}:${{ github.sha }}
+            docker pull ${{ env.Image_url }}:${{ github.sha }}
             
             # Stop and remove old container if exists
             docker stop app || true
